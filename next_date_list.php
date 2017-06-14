@@ -6,7 +6,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     include "database_access.php";
 
     if($connection) {
-        $statement = $connection->prepare('Select * from civil_t where date_next_list = :next_date AND purpose_today = :purpose_id');
+        $statement = $connection->prepare('Select type_name, pet_name, pet_adv, res_name, res_adv, filcase_type, fil_year, fil_no from civil_t
+  INNER JOIN case_type_t ON civil_t.filcase_type = case_type_t.case_type where date_next_list = :next_date AND purpose_today = :purpose_id');
         $statement->execute(array('next_date' => $date, 'purpose_id' => 2));
         $admissionRecords = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -37,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $this->Cell(0, 5, $judgeName, 0, 1, 'C');
                 $this->Cell(0, 5, $humanDate, 0, 1, 'C');
                 $this->Ln(7);
-                $this->SetFont('Arial', '', 10);
+                $this->SetFont('Arial', '', 8);
             }
 
             function Footer()
@@ -136,15 +137,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $i =0;
             foreach ($admissionRecords as $admissionRecord) {
                 $i++;
-                $html = 'Case Id : '.$admissionRecord['fil_no'].', Case Year : '.$admissionRecord['fil_year'].',Respondent Name : '.$admissionRecord['res_name'].', Respondent Lawyer : '.$admissionRecord['res_adv'].
-                    ',Resident Name : '.$admissionRecord['pet_name'].', Resident Lawyer : '.$admissionRecord['pet_adv'].' <br>';
+                $html = $admissionRecord['type_name'].'  '.$admissionRecord['fil_no'].'/'.$admissionRecord['fil_year'].'<br>'. $admissionRecord['res_name'].'                          ';
+                $html .= ($admissionRecord['res_adv']) ? $admissionRecord['res_adv'].' For Respondent' : '';
+                $html .= '<br>vs<br>'. $admissionRecord['pet_name'].'                          ';
+                $html .= ($admissionRecord['pet_adv']) ? $admissionRecord['pet_adv'].' For Petitioner ': '';
+                $html .= '<br>';
                 $pdf->Ln(7);
-                $pdf->WriteHTML($i."- ".$html);
+                $pdf->WriteHTML($i.". ".$html);
             }
-        } else {
-            $pdf->WriteHTML(" (No Record) ");
         }
-
         $pdf->Ln(7);
 
         $pdf->WriteHTML("<b><i><u>For Order : </u></i></b>");
@@ -152,16 +153,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $i =0;
             foreach ($orderRecords as $orderRecord) {
                 $i++;
-                $html = 'Case Id : '.$orderRecord['fil_no'].', Case Year : '.$orderRecord['fil_year'].', Respondent Name : '.$orderRecord['res_name'].', Respondent Lawyer : '.$orderRecord['res_adv'].
-                    ', Resident Name : '.$orderRecord['pet_name'].', Resident Lawyer : '.$orderRecord['pet_adv'].' <br>';
+                $html = $orderRecord['type_name'].'  '.$orderRecord['fil_no'].'/'.$orderRecord['fil_year'].'<br>'. $orderRecord['res_name'].'                          ';
+                $html .= ($orderRecord['res_adv']) ? $orderRecord['res_adv'].' For Respondent' : '';
+                $html .= '<br>vs<br>'. $orderRecord['pet_name'].'                          ';
+                $html .= ($orderRecord['pet_adv']) ? $orderRecord['pet_adv'].' For Petitioner ': '';
+                $html .= '<br>';
                 $pdf->Ln(7);
-                $pdf->WriteHTML($i."- ".$html);
+                $pdf->WriteHTML($i.". ".$html);
             }
-        } else {
-            $pdf->WriteHTML(" (No Record) ");
-
         }
-
         $pdf->Ln(7);
 
         $pdf->WriteHTML("<b><i><u>For Final Hearing : </u></i></b>");
@@ -169,14 +169,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $i =0;
             foreach ($hearingRecords as $hearingRecord) {
                 $i++;
-                $html = 'Case Id : '.$hearingRecord['fil_no'].', Case Year : '.$hearingRecord['fil_year'].',Respondent Name : '.$hearingRecord['res_name'].', Respondent Lawyer : '.$hearingRecord['res_adv'].
-                    ', Resident Name : '.$hearingRecord['pet_name'].', Resident Lawyer : '.$hearingRecord['pet_adv'].' <br>';
+                $html = $hearingRecord['type_name'].'  '.$hearingRecord['fil_no'].'/'.$hearingRecord['fil_year'].'<br>'. $hearingRecord['res_name'].'                          ';
+                $html .= ($hearingRecord['res_adv']) ? $hearingRecord['res_adv'].' For Respondent' : '';
+                $html .= '<br>vs<br>'. $hearingRecord['pet_name'].'                          ';
+                $html .= ($hearingRecord['pet_adv']) ? $hearingRecord['pet_adv'].' For Petitioner ': '';
+                $html .= '<br>';
                 $pdf->Ln(7);
-                $pdf->WriteHTML($i."- ".$html);
+                $pdf->WriteHTML($i.". ".$html);
             }
-        } else {
-            $pdf->WriteHTML(" (No Record) ");
-
         }
 
         $pdf->Output();
