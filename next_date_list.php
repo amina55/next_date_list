@@ -7,13 +7,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if($connection) {
         $statement = $connection->prepare('Select * from civil_t where date_next_list = :next_date AND purpose_today = :purpose_id');
-        $statement->execute(['next_date' => $date, 'purpose_id' => 2]);
+        $statement->execute(array('next_date' => $date, 'purpose_id' => 2));
         $admissionRecords = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        $statement->execute(['next_date' => $date, 'purpose_id' => 4]);
+        $statement->execute(array('next_date' => $date, 'purpose_id' => 4));
         $orderRecords = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        $statement->execute(['next_date' => $date, 'purpose_id' => 8]);
+        $statement->execute(array('next_date' => $date, 'purpose_id' => 8));
         $hearingRecords = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 
@@ -127,9 +127,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $this->SetTextColor(0);
             }
         }
-
-        $html = 'Respondent Name : amina, Respondent Lawyer : nisar, Resident Name : amina, Resident Lawyer : nisar <br>';
-
         $pdf = new PDF();
         $pdf->AliasNbPages();
         $pdf->AddPage();
@@ -139,7 +136,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $i =0;
             foreach ($admissionRecords as $admissionRecord) {
                 $i++;
-                $html = 'Respondent Name : '.$admissionRecord['res_name'].', Respondent Lawyer : '.$admissionRecord['res_adv'].
+                $html = 'Case Id : '.$admissionRecord['fil_no'].', Case Year : '.$admissionRecord['fil_year'].',Respondent Name : '.$admissionRecord['res_name'].', Respondent Lawyer : '.$admissionRecord['res_adv'].
                     ',Resident Name : '.$admissionRecord['pet_name'].', Resident Lawyer : '.$admissionRecord['pet_adv'].' <br>';
                 $pdf->Ln(7);
                 $pdf->WriteHTML($i."- ".$html);
@@ -155,7 +152,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $i =0;
             foreach ($orderRecords as $orderRecord) {
                 $i++;
-                $html = 'Respondent Name : '.$orderRecord['res_name'].', Respondent Lawyer : '.$orderRecord['res_adv'].
+                $html = 'Case Id : '.$orderRecord['fil_no'].', Case Year : '.$orderRecord['fil_year'].', Respondent Name : '.$orderRecord['res_name'].', Respondent Lawyer : '.$orderRecord['res_adv'].
                     ', Resident Name : '.$orderRecord['pet_name'].', Resident Lawyer : '.$orderRecord['pet_adv'].' <br>';
                 $pdf->Ln(7);
                 $pdf->WriteHTML($i."- ".$html);
@@ -172,7 +169,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $i =0;
             foreach ($hearingRecords as $hearingRecord) {
                 $i++;
-                $html = 'Respondent Name : '.$hearingRecord['res_name'].', Respondent Lawyer : '.$hearingRecord['res_adv'].
+                $html = 'Case Id : '.$hearingRecord['fil_no'].', Case Year : '.$hearingRecord['fil_year'].',Respondent Name : '.$hearingRecord['res_name'].', Respondent Lawyer : '.$hearingRecord['res_adv'].
                     ', Resident Name : '.$hearingRecord['pet_name'].', Resident Lawyer : '.$hearingRecord['pet_adv'].' <br>';
                 $pdf->Ln(7);
                 $pdf->WriteHTML($i."- ".$html);
@@ -231,13 +228,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="spacing">
             <form action="" method="post" class="form-horizontal">
                 <div class="form-group">
-                    <label for="next_list_date" class="cols-sm-4 control-label">Next List Date</label>
-                    <div class="cols-sm-2">
+                    <label for="next_list_date" class="col-sm-4 control-label">Next List Date</label>
+                    <div class="col-sm-6">
                         <input type="text" class="form-control date-format" name="next_list_date" id="next_list_date"  placeholder="Choose Next List Date" required/>
                     </div>
                 </div>
 
-                <div>
+                <div class="col-sm-offset-4">
                     <button type="submit" class="btn btn-primary"> Export Pdf</button>
                 </div>
             </form>
